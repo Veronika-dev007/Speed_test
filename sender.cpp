@@ -42,16 +42,17 @@ QDataStream &operator <<(QDataStream &str, Packet & m)
 {
   str << (qint32)m.id;
   str << (qint32)m.numOfDatagrams;
+  str << m.time;
   str.writeRawData(m.payload.data(),m.payload.size());
   return str;
 }
 
 void Sender::on_btnSend_clicked()
 {
-    //senderAddress = ui->lineIPSender->text();
-    //receiverAddress = ui->lineIPReceiver->text();
-    senderAddress = "192.168.50.207";
-    receiverAddress =  "192.168.50.16";
+    senderAddress = ui->lineIPSender->text();
+    receiverAddress = ui->lineIPReceiver->text();
+    //senderAddress = "192.168.50.207";
+    //receiverAddress =  "192.168.50.16";
 
     sendData();
 }
@@ -60,7 +61,7 @@ void Sender::sendData()
 {
     for(int i=0; i<numberOfDatagrams; i++){
 
-        Packet dataGram(i+1,numberOfDatagrams,{2000,'a'});
+        Packet dataGram(i+1,numberOfDatagrams,QTime::currentTime().toString("hh:mm:ss"),{2000,'a'});
 
         QByteArray buf;
         QDataStream s(&buf, QIODevice::WriteOnly);
