@@ -7,7 +7,7 @@ Sender::Sender(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    numberOfDatagrams = 400;
+    numberOfDatagrams = 1000;
 
     initSendSocket();
     initReceiveSocket();
@@ -42,17 +42,17 @@ QDataStream &operator <<(QDataStream &str, Packet & m)
 {
   str << (qint32)m.id;
   str << (qint32)m.numOfDatagrams;
-  str << m.time;
+  str << (qint64)m.time;
   str.writeRawData(m.payload.data(),m.payload.size());
   return str;
 }
 
 void Sender::on_btnSend_clicked()
 {
-    senderAddress = ui->lineIPSender->text();
-    receiverAddress = ui->lineIPReceiver->text();
-    //senderAddress = "192.168.50.207";
-    //receiverAddress =  "192.168.50.16";
+    //senderAddress = ui->lineIPSender->text();
+    //receiverAddress = ui->lineIPReceiver->text();
+    senderAddress = "192.168.50.207";
+    receiverAddress =  "192.168.50.16";
 
     sendData();
 }
@@ -61,7 +61,7 @@ void Sender::sendData()
 {
     for(int i=0; i<numberOfDatagrams; i++){
 
-        Packet dataGram(i+1,numberOfDatagrams,QTime::currentTime().toString("hh:mm:ss"),{2000,'a'});
+        Packet dataGram(i+1,numberOfDatagrams,QDateTime::currentDateTime().toMSecsSinceEpoch(),{2000,'a'});
 
         QByteArray buf;
         QDataStream s(&buf, QIODevice::WriteOnly);
@@ -85,7 +85,7 @@ void Sender::processData()
 
     if (!timer->isActive() && QString(data) == "0" ){
         timer->start(2000);
-        numberOfDatagrams+=300;
+        numberOfDatagrams+=500;
         sendData();
     }
 
