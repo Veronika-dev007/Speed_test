@@ -13,7 +13,7 @@ Receiver::Receiver(QWidget *parent) :
 
     allDatagramPayload = 0;
     countDatagram = 0;
-    speed = 0;
+    curSpeed = prevSpeed = 0;
     isReading = false;
 }
 
@@ -43,7 +43,7 @@ void Receiver::initTimer()
 
 QDataStream &operator >>(QDataStream &str, Packet &m)
 {
-  str >> m.id >> m.numOfDatagrams>>m.time;
+  str >> m.id >> m.numOfDatagrams >> m.time;
   str.readRawData(m.payload.data(), m.payload.size());
   return str;
 }
@@ -51,9 +51,8 @@ QDataStream &operator >>(QDataStream &str, Packet &m)
 void Receiver::processData()
 {
     int receivedDatagrams=0;
-
     if (!isReading){
-        timer->start(3000);
+        timer->start(10000);
         isReading = true;
     }
 
@@ -67,7 +66,7 @@ void Receiver::processData()
        s >> dataGram;
 
        if (!countDatagram)
-           startTime = QTime::fromString(dataGram.time,QString("hh:mm:ss"));
+           startTime = dataGram.time;
 
        allDatagramPayload += dataGramSize;
        receivedDatagrams++;
@@ -78,26 +77,25 @@ void Receiver::processData()
 
 void Receiver::checkProcess()
 {
-    timer->stop();
     isReading = false;
+    endTime = dataGram.time;
+    int transmissionTime = endTime - startTime;
 
-    endTime = QTime::fromString(dataGram.time,QString("hh:mm:ss"));
-    int transmissionTime = startTime.secsTo(endTime);
+    prevSpeed = curSpeed;
+    curSpeed = (allDatagramPayload * 0.000008)/(transmissionTime/1000.0);
 
     if(isChannelOverloaded())
     {
-        speed = (!transmissionTime) ? allDatagramPayload * 0.000008 : (allDatagramPayload * 0.000008)/transmissionTime;
-        ui->label->setText(ui->label->text()+"\n\nПереполнение канала!\nКол-во принятых пакетов: "+QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams)+"\nОбщий размер принятых пакетов (байт): "+QString::number(allDatagramPayload)+"\nВремя передачи (c): "+QString::number(transmissionTime)+"\nСкорость передачи (Mбит/с): "+QString::number(speed));
+        ui->label->setText(ui->label->text()+"\n\nПереполнение канала!\nКол-во принятых пакетов: "+QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams)+"\nОбщий размер принятых пакетов (байт): "+QString::number(allDatagramPayload)+"\nВремя передачи (мc): "+QString::number(transmissionTime)+"\nСкорость передачи (Mбит/с): "+QString::number(curSpeed));
     }
     else
     {
-        ui->label->setText(ui->label->text()+"\n\nКол-во принятых пакетов: "+QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams));
-
+        ui->label->setText(ui->label->text()+"\n\nКол-во принятых пакетов: "+QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams)+"\nВремя передачи (мc): "+QString::number(transmissionTime)+"\nСкорость передачи (Mбит/с): "+QString::number(curSpeed));
         sendInfo();
 
         allDatagramPayload = 0;
         countDatagram = 0;
-        speed = 0;
+        startTime = endTime = 0;
     }
 }
 
@@ -111,7 +109,7 @@ void Receiver::sendInfo()
 
 bool Receiver::isChannelOverloaded()
 {
-    if(dataGram.numOfDatagrams-countDatagram >= dataGram.numOfDatagrams*0.1)
+    if(abs(prevSpeed-curSpeed)<3)
         return true;
     return false;
 }
