@@ -7,7 +7,7 @@ Sender::Sender(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    numberOfDatagrams = 1000;
+    numberOfDatagrams = 3000;
 
     initSendSocket();
     initReceiveSocket();
@@ -23,7 +23,6 @@ void Sender::initTimer()
 {
     timer = new QTimer();
     timer->setSingleShot(true);
-    connect(timer,&QTimer::timeout,[&](){timer->stop();});
 }
 
 void Sender::initSendSocket()
@@ -85,7 +84,7 @@ void Sender::processData()
 
     if (!timer->isActive() && QString(data) == "0" ){
         timer->start(2000);
-        numberOfDatagrams+=500;
+        numberOfDatagrams+=400;
         sendData();
     }
 
