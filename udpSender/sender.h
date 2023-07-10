@@ -6,6 +6,7 @@
 #include <QByteArray>
 #include <QTimer>
 #include <QDateTime>
+#include <QMessageBox>
 
 namespace Ui {
 class Widget;
