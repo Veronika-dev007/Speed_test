@@ -7,7 +7,7 @@ Sender::Sender(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    numberOfDatagrams = 4000;
+    numberOfDatagrams = 3000;
 
     initSendSocket();
     initReceiveSocket();
@@ -48,20 +48,17 @@ QDataStream &operator <<(QDataStream &str, Packet & m)
 
 void Sender::on_btnSend_clicked()
 {
-//    if( ui->lineIPSender->text().isEmpty() || ui->lineIPReceiver->text().isEmpty()){
-//        QMessageBox::information(this,"Ошибка!","Введите IP-адреса.");
-//    }
-//    else{
+    if( ui->lineIPSender->text().isEmpty() || ui->lineIPReceiver->text().isEmpty()){
+        QMessageBox::information(this,"Ошибка!","Введите IP-адреса.");
+    }
+    else{
         //senderAddress = "192.168.50.207";
         //receiverAddress =  "192.168.50.16";
 
-        senderAddress = "10.14.167.139";
-        receiverAddress = "10.14.167.30";
-        //senderAddress = ui->lineIPSender->text();
-        //receiverAddress = ui->lineIPReceiver->text();
+        senderAddress = ui->lineIPSender->text();
+        receiverAddress = ui->lineIPReceiver->text();
         sendData();
-    //}
-
+    }
 }
 
 void Sender::sendData()
