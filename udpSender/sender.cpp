@@ -52,12 +52,13 @@ void Sender::on_btnSend_clicked()
         QMessageBox::information(this,"Ошибка!","Введите IP-адреса.");
     }
     else{
-        senderAddress = ui->lineIPSender->text();
-        receiverAddress = ui->lineIPReceiver->text();
+        senderAddress = "192.168.50.207";
+        receiverAddress =  "192.168.50.16";
+        //senderAddress = ui->lineIPSender->text();
+        //receiverAddress = ui->lineIPReceiver->text();
         sendData();
     }
-    //senderAddress = "192.168.50.207";
-    //receiverAddress =  "192.168.50.16"; 
+
 }
 
 void Sender::sendData()
@@ -74,7 +75,7 @@ void Sender::sendData()
         udpSocket->writeDatagram(buf, QHostAddress(receiverAddress), 7777);
     }
 
-    ui->lblTest->setText(ui->lblTest->text()+" "+QString::number(numberOfDatagrams));
+    //ui->lblTest->setText(ui->lblTest->text()+" "+QString::number(numberOfDatagrams));
 }
 
 void Sender::processData()
