@@ -94,12 +94,13 @@ void Receiver::checkProcess()
     }
     else
     {
-        ui->label->setText(ui->label->text()+"\n\nКол-во принятых пакетов: "+QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams)+"\nВремя передачи Sender (мc): "+"\nВремя передачи Receiver (мc): "+QString::number(receiverTransmissionTime)+QString::number(transmissionTime)+"\nСкорость передачи (Mбит/с): "+QString::number(curSpeed));
+        ui->label->setText(ui->label->text()+"\n\nКол-во принятых пакетов: "+QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams)+"\nВремя передачи Sender (мc): "+QString::number(transmissionTime)+"\nВремя передачи Receiver (мc): "+QString::number(receiverTransmissionTime)+"\nСкорость передачи (Mбит/с): "+QString::number(curSpeed));
         sendInfo();
 
         allDatagramPayload = 0;
         countDatagram = 0;
         startTime = endTime = 0;
+        receiverSTime = receiverETime = 0;
     }
 }
 
