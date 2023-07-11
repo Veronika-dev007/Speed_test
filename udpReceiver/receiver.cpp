@@ -52,7 +52,7 @@ void Receiver::processData()
 {
     int receivedDatagrams=0;
     if (!isReading){
-        timer->start(10000);
+        timer->start(5000);
         isReading = true;
     }
 
@@ -109,7 +109,7 @@ void Receiver::sendInfo()
 
 bool Receiver::isChannelOverloaded()
 {
-    if(abs(prevSpeed-curSpeed)<3)
+    if(abs(prevSpeed-curSpeed)<2)
         return true;
     return false;
 }
