@@ -5,6 +5,7 @@
 #include <QUdpSocket>
 #include <QTimer>
 #include <cmath>
+#include <QDateTime>
 
 struct Packet {
     int id;
@@ -47,7 +48,7 @@ private:
     int allDatagramPayload;
     unsigned int countDatagram;
     double curSpeed, prevSpeed;
-    qint64 startTime, endTime;
+    qint64 startTime, endTime, receiverSTime, receiverETime;
     bool isReading;
 
 };

@@ -54,6 +54,7 @@ void Receiver::processData()
     if (!isReading){
         timer->start(5000);
         isReading = true;
+        receiverSTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
     }
 
     while (receiver->hasPendingDatagrams()) {
@@ -61,6 +62,8 @@ void Receiver::processData()
        QByteArray buf(dataGramSize,Qt::Uninitialized);
        QDataStream s(&buf, QIODevice::ReadOnly);
        receiver->readDatagram(buf.data(), buf.size(),&senderAddress);
+
+       receiverETime = QDateTime::currentDateTime().toMSecsSinceEpoch();
 
        dataGram.payload.resize(dataGramSize);
        s >> dataGram;
@@ -80,17 +83,18 @@ void Receiver::checkProcess()
     isReading = false;
     endTime = dataGram.time;
     int transmissionTime = endTime - startTime;
+    int receiverTransmissionTime = receiverETime - receiverSTime;
 
     prevSpeed = curSpeed;
     curSpeed = (allDatagramPayload * 0.000008)/(transmissionTime/1000.0);
 
     if(isChannelOverloaded())
     {
-        ui->label->setText(ui->label->text()+"\n\nПереполнение канала!\nКол-во принятых пакетов: "+QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams)+"\nОбщий размер принятых пакетов (байт): "+QString::number(allDatagramPayload)+"\nВремя передачи (мc): "+QString::number(transmissionTime)+"\nСкорость передачи (Mбит/с): "+QString::number(curSpeed));
+        ui->label->setText(ui->label->text()+"\n\nПереполнение канала!\nКол-во принятых пакетов: "+QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams)+"\nОбщий размер принятых пакетов (байт): "+QString::number(allDatagramPayload)+"\nВремя передачи Sender (мc): "+QString::number(transmissionTime)+"\nВремя передачи Receiver (мc): "+QString::number(receiverTransmissionTime)+"\nСкорость передачи (Mбит/с): "+QString::number(curSpeed));
     }
     else
     {
-        ui->label->setText(ui->label->text()+"\n\nКол-во принятых пакетов: "+QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams)+"\nВремя передачи (мc): "+QString::number(transmissionTime)+"\nСкорость передачи (Mбит/с): "+QString::number(curSpeed));
+        ui->label->setText(ui->label->text()+"\n\nКол-во принятых пакетов: "+QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams)+"\nВремя передачи Sender (мc): "+"\nВремя передачи Receiver (мc): "+QString::number(receiverTransmissionTime)+QString::number(transmissionTime)+"\nСкорость передачи (Mбит/с): "+QString::number(curSpeed));
         sendInfo();
 
         allDatagramPayload = 0;
