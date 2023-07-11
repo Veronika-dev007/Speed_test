@@ -7,7 +7,7 @@ Sender::Sender(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    numberOfDatagrams = 3000;
+    numberOfDatagrams = 20000;
 
     initSendSocket();
     initReceiveSocket();
