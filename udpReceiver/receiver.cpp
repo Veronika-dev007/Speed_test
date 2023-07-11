@@ -52,7 +52,7 @@ void Receiver::processData()
 {
     int receivedDatagrams=0;
     if (!isReading){
-        timer->start(5000);
+        timer->start(10000);
         isReading = true;
         receiverSTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
     }
