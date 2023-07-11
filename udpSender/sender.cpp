@@ -34,7 +34,7 @@ void Sender::initReceiveSocket()
 {
     receiveSocket = new QUdpSocket(this);
     receiveSocket->bind(8888,QUdpSocket::ShareAddress);
-    //connect(receiveSocket,&QUdpSocket::readyRead,this,&Sender::processData);
+    connect(receiveSocket,&QUdpSocket::readyRead,this,&Sender::processData);
 }
 
 QDataStream &operator <<(QDataStream &str, Packet & m)
@@ -48,19 +48,19 @@ QDataStream &operator <<(QDataStream &str, Packet & m)
 
 void Sender::on_btnSend_clicked()
 {
-    if( ui->lineIPSender->text().isEmpty() || ui->lineIPReceiver->text().isEmpty()){
-        QMessageBox::information(this,"Ошибка!","Введите IP-адреса.");
-    }
-    else{
+//    if( ui->lineIPSender->text().isEmpty() || ui->lineIPReceiver->text().isEmpty()){
+//        QMessageBox::information(this,"Ошибка!","Введите IP-адреса.");
+//    }
+//    else{
         //senderAddress = "192.168.50.207";
         //receiverAddress =  "192.168.50.16";
 
-        //10.14.167.139
-        //10.14.167.30
-        senderAddress = ui->lineIPSender->text();
-        receiverAddress = ui->lineIPReceiver->text();
+        senderAddress = "10.14.167.139";
+        receiverAddress = "10.14.167.30";
+        //senderAddress = ui->lineIPSender->text();
+        //receiverAddress = ui->lineIPReceiver->text();
         sendData();
-    }
+    //}
 
 }
 
