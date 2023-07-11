@@ -86,11 +86,15 @@ void Receiver::checkProcess()
     int receiverTransmissionTime = receiverETime - receiverSTime;
 
     prevSpeed = curSpeed;
-    curSpeed = (allDatagramPayload * 0.000008)/(transmissionTime/1000.0);
+    curSpeed = (allDatagramPayload * 0.000008)/(receiverTransmissionTime/1000.0);
 
     if(isChannelOverloaded())
     {
-        ui->label->setText(ui->label->text()+"\n\nПереполнение канала!\nКол-во принятых пакетов: "+QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams)+"\nОбщий размер принятых пакетов (байт): "+QString::number(allDatagramPayload)+"\nВремя передачи Sender (мc): "+QString::number(transmissionTime)+"\nВремя передачи Receiver (мc): "+QString::number(receiverTransmissionTime)+"\nСкорость передачи (Mбит/с): "+QString::number(curSpeed));
+        ui->label->setText(ui->label->text()+"\n\nПереполнение канала!\nКол-во принятых пакетов: "+ QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams)+
+                           "\nОбщий размер принятых пакетов (байт): "+QString::number(allDatagramPayload)+
+                           "\nВремя передачи Sender (мc): "+QString::number(transmissionTime)+
+                           "\nВремя передачи Receiver (мc): "+QString::number(receiverTransmissionTime)+
+                           "\nСкорость передачи (Mбит/с): "+QString::number(curSpeed));
     }
     else
     {
