@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QMessageBox>
+#include <QSettings>
 
 namespace Ui {
 class Widget;
@@ -25,6 +26,8 @@ private:
     void initTimer();
     void initSendSocket();
     void initReceiveSocket();
+    void loadSettings();
+    void saveSettings();
 
 private slots:
     void on_btnSend_clicked();
@@ -35,6 +38,7 @@ private:
     QUdpSocket *udpSocket, *receiveSocket;
     QString senderAddress, receiverAddress;
     QTimer *timer;
+    QSettings *settings;
     int numberOfDatagrams;
 };
 

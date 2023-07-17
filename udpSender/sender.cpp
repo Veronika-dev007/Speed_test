@@ -7,15 +7,18 @@ Sender::Sender(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    numberOfDatagrams = 1000;//4000
+    settings = new QSettings(this);
+    numberOfDatagrams = 4000;
 
     initSendSocket();
     initReceiveSocket();
     initTimer();
+    loadSettings();
 }
 
 Sender::~Sender()
 {
+    saveSettings();
     delete ui;
 }
 
@@ -37,6 +40,18 @@ void Sender::initReceiveSocket()
     connect(receiveSocket,&QUdpSocket::readyRead,this,&Sender::processData);
 }
 
+void Sender::loadSettings()
+{
+    ui->lineIPSender->setText(settings->value("lineIPSender").toString());
+    ui->lineIPReceiver->setText(settings->value("lineIPReceiver").toString());
+}
+
+void Sender::saveSettings()
+{
+    settings->setValue("lineIPSender",ui->lineIPSender->text());
+    settings->setValue("lineIPReceiver",ui->lineIPReceiver->text());
+}
+
 QDataStream &operator <<(QDataStream &str, Packet & m)
 {
   str << (qint32)m.id;
@@ -52,9 +67,6 @@ void Sender::on_btnSend_clicked()
         QMessageBox::information(this,"Ошибка!","Введите IP-адреса.");
     }
     else{
-        //senderAddress = "192.168.50.207";
-        //receiverAddress =  "192.168.50.16";
-
         senderAddress = ui->lineIPSender->text();
         receiverAddress = ui->lineIPReceiver->text();
         sendData();
@@ -74,8 +86,6 @@ void Sender::sendData()
 
         udpSocket->writeDatagram(buf, QHostAddress(receiverAddress), 7777);
     }
-
-    //ui->lblTest->setText(ui->lblTest->text()+" "+QString::number(numberOfDatagrams));
 }
 
 void Sender::processData()
@@ -89,7 +99,7 @@ void Sender::processData()
 
     if (!timer->isActive() && QString(data) == "0" ){
         timer->start(2000);
-        numberOfDatagrams+=500;//400
+        numberOfDatagrams+=400;
         sendData();
     }
 
