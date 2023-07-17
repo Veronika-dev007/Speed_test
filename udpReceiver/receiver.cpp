@@ -82,7 +82,6 @@ void Receiver::checkProcess()
 {
     isReading = false;
     endTime = dataGram.time;
-    //int transmissionTime = endTime - startTime;
     int receiverTransmissionTime = receiverETime - receiverSTime;
 
     prevSpeed = curSpeed;
@@ -92,15 +91,13 @@ void Receiver::checkProcess()
     {
         ui->label->setText(ui->label->text()+"\n\nПереполнение канала!\nКол-во принятых пакетов: "+ QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams)+
                            "\nОбщий размер принятых пакетов (байт): "+QString::number(allDatagramPayload)+
-                           //"\nВремя передачи Sender (мc): "+QString::number(transmissionTime)+
                            "\nВремя передачи (мc): "+QString::number(receiverTransmissionTime)+
                            "\nСкорость передачи (Mбит/с): "+QString::number(curSpeed));
     }
     else
     {
         ui->label->setText(ui->label->text()+"\n\nКол-во принятых пакетов: "+QString::number(countDatagram)+" из "+QString::number(dataGram.numOfDatagrams)+
-                           //"\nВремя передачи Sender (мc): "+QString::number(transmissionTime)+
-                           "\nВремя передачи Receiver (мc): "+QString::number(receiverTransmissionTime)+
+                           "\nВремя передачи (мc): "+QString::number(receiverTransmissionTime)+
                            "\nСкорость передачи (Mбит/с): "+QString::number(curSpeed));
         sendInfo();
 
